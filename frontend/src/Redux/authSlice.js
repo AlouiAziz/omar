@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
     loading: false,
     error: null,
   },
@@ -17,7 +17,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       // Sauvegarde du user dans le local storage
-      // localStorage.setItem("user", JSON.stringify(action.payload));
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
     loginFailure(state, action) {
       state.user = null;
@@ -29,7 +29,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       // Suppression du user du local storage lors du logout
-      // localStorage.removeItem("user");
+      localStorage.removeItem("user");
     },
   },
 });
@@ -37,6 +37,10 @@ const authSlice = createSlice({
 export const { loginStart, loginSuccess, loginFailure, logout } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
+
+
+
+
 
 
 

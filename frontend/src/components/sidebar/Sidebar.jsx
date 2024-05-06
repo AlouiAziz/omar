@@ -33,6 +33,12 @@ const Sidebar = () => {
               <span>Users</span>
             </li>
           </Link>
+          <Link to="/servers" style={{ textDecoration: "none" }}>
+            <li>
+              <PersonOutlineIcon className="icon" />
+              <span>Servers</span>
+            </li>
+          </Link>
           <p className="title">ADMIN</p>
           <li>
             <AccountCircleOutlinedIcon className="icon" />

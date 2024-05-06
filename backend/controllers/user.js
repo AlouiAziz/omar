@@ -3,24 +3,24 @@ import bcrypt from "bcrypt"
 
 export const updateUser = async (req, res, next) => {
     try {
-
-        const { password, ...rest } = req.body;
-
-        if (password) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-            rest.password = hashedPassword;
+        if (req.body.password) {
+            const salt = bcrypt.genSaltSync(10);
+            const hash = bcrypt.hashSync(req.body.password, salt);
+            req.body.password = hash; // Mettez à jour le mot de passe hashé dans la demande.
         }
 
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: rest }, { new: true })
-        res.status(200).json(updatedUser)
+        const { password, ...rest } = req.body; // Exclure le mot de passe du reste des données.
+
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: rest }, { new: true });
+        res.status(200).json(updatedUser);
 
     } catch (err) {
         return res.status(500).json({
-            payload: "Error"
-        })
+            error: "Erreur lors de la mise à jour de l'utilisateur."
+        });
     }
-}
+};
+
 
 
 export const deleteUser = async (req, res, next) => {

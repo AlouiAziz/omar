@@ -11,6 +11,9 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 import { userColumns } from "./datatablesource";
 import Edit from "../src/pages/editUser/Edit.jsx";
+import Servers from "./pages/servers/Servers.jsx";
+import Cercle from "./components/cercle/Cercle.jsx";
+
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -30,6 +33,9 @@ function App() {
           <Route path="/users/:id" element={<Single />} />
           <Route path="/users/new" element={<NewUser />} />
           <Route path="/users/edit/:id" element={<Edit />} />
+
+          <Route path="/servers" element={<Servers />} />
+          <Route path='/serverDetails' element={<Cercle />} />
 
         </Routes>
 

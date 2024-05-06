@@ -5,6 +5,7 @@ import CookieParser from 'cookie-parser';
 import cors from "cors"
 import authRoute from './routes/auth.js'
 import userRoute from './routes/user.js'
+import serverRoute from './routes/server.js'
 
 const app = express()
 
@@ -35,6 +36,7 @@ app.use(express.json())
 
 app.use("/auth", authRoute)
 app.use("/users", userRoute)
+app.use("/servers", serverRoute)
 
 app.listen(PORT, () => {
     connect()

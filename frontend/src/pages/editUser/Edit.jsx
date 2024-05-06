@@ -82,10 +82,10 @@ const Edit = () => {
                 <input value={info.privilege || ''} id="privilege" onChange={handleChange} />
               </div>
 
-              <div className="formInput">
+              {/* <div className="formInput">
                 <label>Password</label>
                 <input type="password" id="password" onChange={handleChange} />
-              </div>
+              </div> */}
 
               <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
