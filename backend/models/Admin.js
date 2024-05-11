@@ -2,12 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-    admin: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Admin",
-        required: true
-    },
+const AdminSchema = new Schema({
     nom: {
         type: String,
         required: true,
@@ -32,7 +27,11 @@ const UserSchema = new Schema({
     },
     img: {
         type: String
-    }
+    },
+    users: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }]
 });
 
-export default mongoose.model("User", UserSchema);
+export default mongoose.model("Admin", AdminSchema);

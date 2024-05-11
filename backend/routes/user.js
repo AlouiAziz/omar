@@ -1,19 +1,17 @@
 import express from 'express'
-import { deleteUser, getAllUsers, getOneUser, updateUser } from '../controllers/user.js'
+import { createUser, deleteUser, getAllUsers, updateUser } from '../controllers/user.js'
+import { registerValidation, validate } from '../middlewares/authValidate.js'
 
 const router = express.Router()
+
+//CREATE
+router.post("/", registerValidation, validate, createUser)
 
 //UPDATE
 router.put("/:id", updateUser)
 
-
 //DELETE
 router.delete("/:id", deleteUser)
-
-
-//GET
-router.get("/:id", getOneUser)
-
 
 //GET ALL
 router.get("/", getAllUsers)

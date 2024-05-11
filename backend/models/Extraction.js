@@ -2,8 +2,12 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const ServerSchema = new Schema({
+const ExtractionSchema = new Schema({
     serverName: {
+        type: String,
+        required: true,
+    },
+    ipAddress: {
         type: String,
         required: true,
     },
@@ -27,6 +31,14 @@ const ServerSchema = new Schema({
         type: Number,
         default: false
     },
+    FilesNumber: {
+        type: Number,
+        default: false
+    },
+    FilesSize: {
+        type: String,
+        required: true,
+    },
     insertionDate: {
         type: Date,
         required: true,
@@ -34,6 +46,6 @@ const ServerSchema = new Schema({
     }
 });
 
-export default mongoose.model("Server", ServerSchema);
+export default mongoose.model("Extraction", ExtractionSchema);
 
 

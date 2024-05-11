@@ -7,42 +7,49 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { userInputs } from "../../formSource";
+import useFetch from '../../hooks/useFetch.js';
 
 const NewUser = () => {
 
-  const navigate = useNavigate()
+  const { data: admins, loading, error } = useFetch("/admins");
+  const { data: servers, sloading, serror } = useFetch("/servers");
 
+  const navigate = useNavigate();
   const [file, setFile] = useState("");
-
-  const [info, setInfo] = useState({})
+  const [info, setInfo] = useState({});
 
   const handleChange = e => {
-    setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }))
+    const { id, value } = e.target;
+    setInfo(prevInfo => ({ ...prevInfo, [id]: value }));
   }
 
-  const handleClick = async e => {
-
+  const handleClick = async (e) => {
     e.preventDefault();
     if (!file) {
-      toast.error('Please select a file');
+      toast.error("Please select a file");
       return;
     }
 
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "SuccessStudy");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "SuccessStudy");
 
     try {
-      const uploadRes = await axios.post("https://api.cloudinary.com/v1_1/dgma2l4hh/image/upload", data);
+      const uploadRes = await axios.post(
+        "https://api.cloudinary.com/v1_1/dgma2l4hh/image/upload",
+        formData
+      );
       const { url } = uploadRes.data;
       const newUser = { ...info, img: url };
-      await axios.post('/auth/register', newUser);
-      toast.success('User Has Been Created');
-      navigate('/users');
+
+      await axios.post("/users", newUser);
+      toast.success("User has been created");
+      navigate("/users");
     } catch (err) {
-      err.response.data.errors.forEach(error => toast.error(error.msg));
+      console.log(err);
+      err.response.data.errors.forEach((error) => toast.error(error.msg));
     }
-  }
+  };
 
 
 
@@ -78,13 +85,32 @@ const NewUser = () => {
                   style={{ display: "none" }}
                 />
               </div>
-
               {userInputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
                   <input type={input.type} placeholder={input.placeholder} onChange={handleChange} id={input.id} />
-                </div>
-              ))}
+                </div>))}
+              <div className="formInput">
+                <label>Admin</label>
+                <select id="admin"  onChange={handleChange}>
+                  {admins &&
+                    admins.map(admin => (
+                      <option key={admin._id} value={admin._id}>
+                        {admin?.nom} {admin?.prenom}
+                      </option>
+                    ))}
+                </select>
+
+              </div>
+
+              {/* <div className="formInput">
+                <label>Servers</label>
+                  {admins &&
+                    servers.map(server => (
+                      <input type="checkbox" key={server?._id} id={server?._id} value={server?.serverName} />
+                    ))}
+              </div> */}
+
               <button onClick={handleClick}>Send</button>
             </form>
           </div>
@@ -95,3 +121,12 @@ const NewUser = () => {
 };
 
 export default NewUser;
+
+
+
+
+
+
+
+
+
