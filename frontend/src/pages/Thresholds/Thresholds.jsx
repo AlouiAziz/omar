@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './Servers.css';
 import Navbar from "../../components/navbar/Navbar";
 import Sidebar from '../../components/sidebar/Sidebar.jsx';
 import Cercle from '../../components/cercle/Cercle.jsx';
@@ -7,16 +6,28 @@ import { useSelector } from 'react-redux';
 import useFetch from '../../hooks/useFetch.js';
 import axios from 'axios';
 
-const Servers = () => {
+const Thresholds = () => {
+
+    const color = (n, sn, mn) => {
+        if (n >= sn && n < mn) {
+            return "orange";
+        } else if (n >= mn) {
+            return "rouge";
+        } else {
+            return "vert";
+        }
+    }
+
+
+    const thresholds = (mn, n) => n >= mn; // Ordre des paramètres corrigé
 
     // Local States
+    const [servers, setServers] = useState([]);
+
     const [selectedServer, setSelectedServer] = useState();
     const [open, setOpen] = useState(false);
-
-    // Importer le user from react redux authSlice
     const user = useSelector((state) => state.auth.user);
-
-    // Fetcher les extraction à partir de privilège de l'utilisateur
+    // Fonction pour obtenir les privilèges en fonction du type d'utilisateur
     let privilege = [];
     if (user?.type === "user") {
         privilege = user?.user?.privilege.split(';');
@@ -29,18 +40,17 @@ const Servers = () => {
     if (user?.type === "superAdmin") { url = `/extractions` }
     else { url = `/extractions/find?serverNames=${privilege.join(',')}` }
 
+    // Fetcher les extraction à partir de privilège de l'utilisateur
     const { data, loading, error } = useFetch(url);
 
 
-    // Initialiser un tableau vide qui va contenir les serveurs aprés filtrage
-    const [servers, setServers] = useState([]);
+
+
 
 
     useEffect(() => {
-
         const fetchServers = async () => {
             if (data) {
-
                 // Extraire le dernier mise à jour pour chaque serverName : Dernier date d'insertion
                 const latestDates = {};
                 data.forEach((item) => {
@@ -50,6 +60,7 @@ const Servers = () => {
                         latestDates[serverName] = currentDate;
                     }
                 });
+
                 const filteredServers = data.filter((item) => {
                     const currentDate = new Date(item.insertionDate);
                     return currentDate.getTime() === latestDates[item.serverName].getTime();
@@ -63,7 +74,15 @@ const Servers = () => {
                     })
                 );
 
-                setServers(fetchedServers);
+                // Filtrer les serveurs en utilisant les seuils
+                const updatedServers = fetchedServers.filter((server) =>
+                    thresholds(parseFloat(server?.config.thresholdMomory.replace(/[^0-9]/g, '')), 100 - (server?.extraction.freeMemory / server?.extraction.totalMemory) * 100) ||
+                    thresholds(parseFloat(server?.config.thresholdSpace.replace(/[^0-9]/g, '')), 100 - (server?.extraction.freeSpace / server?.extraction.totalSpace) * 100) ||
+                    thresholds(server?.config.MaxFilesNumber, server?.extraction.FilesNumber) ||
+                    thresholds(parseFloat(server?.config.MaxFileSize.replace(/[^0-9]/g, '')), parseFloat(server?.extraction.Filessize.replace(/[^0-9]/g, '')))
+                );
+
+                setServers(updatedServers);
             }
         };
 
@@ -72,17 +91,6 @@ const Servers = () => {
 
 
     console.log(servers)
-
-    const color = (n, sn, mn) => {
-        if (n >= sn && n < mn) {
-            return "orange";
-        } else if (n >= mn) {
-            return "rouge";
-        } else {
-            return "vert";
-        }
-    }
-
 
     return (
 
@@ -98,16 +106,19 @@ const Servers = () => {
 
                         {servers.map(server => (
 
-                            <div style={{ width: '18rem', marginTop: 50 }} key={server.extraction._id}>
+                            <div style={{ width: '18rem', marginTop: 50, border: "2px solid black", padding: 20 }} key={server.extraction._id}>
                                 <div className='card'>
 
-                                    <h5 className='App'>{server?.extraction.serverName}</h5>
+                                    <div className="cardTop">
 
-                                    <p>Date : {new Date(server?.extraction.insertionDate).toLocaleString()}</p>
+   
+                                        <h4 > <span className=''>.</span>{server?.extraction.serverName}</h4>
+                                        <h5 >@{server?.extraction.ipAddress}</h5>
+                                        <p>Date : {new Date(server?.extraction.insertionDate).toLocaleString()}</p>
 
+                                    </div>
 
-
-                                    <p className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
+                                    <p style={{marginTop:20}}className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
                                         parseFloat(server?.config.thresholdMomory.replace(/[^0-9]/g, '')))}>Mémoire Libre : {server?.extraction.freeMemory}</p>
 
                                     <p className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
@@ -153,14 +164,12 @@ const Servers = () => {
                             </div>
                         ))}
 
-
-
-
                     </div>
                 </div>
             </div>
         </div>
     );
-};
+}
+    ;
 
-export default Servers;
+export default Thresholds;

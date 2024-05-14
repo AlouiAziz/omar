@@ -2,10 +2,10 @@ import "./sidebar.scss";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
+import { DangerousOutlined } from "@mui/icons-material";
 
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
@@ -26,11 +26,10 @@ const Sidebar = () => {
               <span>Dashboard</span>
             </li>
           </Link>
-          <p className="title">ELEMENTS</p>
-          <Link to="/users" style={{ textDecoration: "none" }}>
+          <Link to="/thresholds" style={{ textDecoration: "none" }}>
             <li>
-              <PersonOutlineIcon className="icon" />
-              <span>Users</span>
+              <DangerousOutlined className="icon" />
+              <span>Thresholds</span>
             </li>
           </Link>
           <Link to="/servers" style={{ textDecoration: "none" }}>
@@ -39,11 +38,19 @@ const Sidebar = () => {
               <span>Servers</span>
             </li>
           </Link>
-          <p className="title">ADMIN</p>
-          <li>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Profile</span>
-          </li>
+          <p className="title">ELEMENTS</p>
+          <Link to="/users" style={{ textDecoration: "none" }}>
+            <li>
+              <PersonOutlineIcon className="icon" />
+              <span>Users</span>
+            </li>
+          </Link>
+          <Link to="/admins" style={{ textDecoration: "none" }}>
+            <li>
+              <PersonOutlineIcon className="icon" />
+              <span>Admins</span>
+            </li>
+          </Link>
           <li>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>

@@ -1,20 +1,26 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useFetch from '../../hooks/useFetch.js'
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {Columns} from '../../datatablesource.js'
 
-const Datatable = ({ columns }) => {
+const Datatable = () => {
 
+  const location = useLocation()
+
+  const path = location.pathname.split("/")[1]
+
+  console.log(path)
 
   const [list, setList] = useState([])
 
-  const { data, loading, error } = useFetch(`/users`)
+  const { data, loading, error } = useFetch(`/${path}`)
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/users/${id}`)
+      await axios.delete(`/${path}/${id}`)
       setList(list.filter((item) => item._id !== id));
     } catch (error) {
       console.log(error)
@@ -37,11 +43,7 @@ const Datatable = ({ columns }) => {
 
           <div className="cellAction">
 
-            <Link to={`/users/${params.row._id}`} style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
-            </Link>
-
-            <Link to={`/users/edit/${params.row._id}`} style={{ textDecoration: "none" }}>
+            <Link to={`/${path}/edit/${params.row._id}`} style={{ textDecoration: "none" }}>
               <div className="viewButton">Edit</div>
             </Link>
 
@@ -59,7 +61,7 @@ const Datatable = ({ columns }) => {
 
       <div className="datatableTitle">
         Add New
-        <Link to={`/users/new`} className="link">
+        <Link to={`/${path}/new`} className="link">
           Add New
         </Link>
       </div>
@@ -67,7 +69,7 @@ const Datatable = ({ columns }) => {
       <DataGrid
         className="datagrid"
         rows={list}
-        columns={columns.concat(actionColumn)}
+        columns={Columns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
         checkboxSelection

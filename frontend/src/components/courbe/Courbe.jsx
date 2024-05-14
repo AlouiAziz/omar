@@ -4,7 +4,7 @@ import useFetch from '../../hooks/useFetch.js'
 
 const Courbe = () => {
 
-  const { data, loading, error } = useFetch(`/servers`)
+  const { data, loading, error } = useFetch(`/extractions`)
 
   const chartRef = useRef(null);
   const chartInstance = useRef(null); // Référence pour le graphique

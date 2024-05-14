@@ -7,7 +7,7 @@ export const login = async (req, res, next) => {
     try {
 
         if (req.body.email === process.env.SuperAdmin && req.body.password === process.env.password) {
-            return res.json("superAdmin");
+            return res.json({ SA:{ nom:"omar" , prenom:"aloui" , email:process.env.SuperAdmin}, type: "superAdmin" });
 
 
         } else {

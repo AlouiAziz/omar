@@ -12,7 +12,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 10px;
 }
 
 .modal {
@@ -66,3 +66,37 @@
   flex: 1;
   margin-right: 10px;
 }
+
+.rouge {
+  color: red;
+}
+
+.orange {
+  color: #ffb703
+}
+
+.vert {
+  color: teal;
+}
+
+.card button {
+  width: 150px;
+  padding: 10px;
+  border: none;
+  background-color: teal;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.cardTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-bottom: 2px solid black;
+}
+
+

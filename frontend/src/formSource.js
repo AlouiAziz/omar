@@ -1,14 +1,13 @@
-// User Inputs
-export const userInputs = [
+export const Inputs = [
   {
     id: "nom",
-    label: "Nom",
+    label: "First Name",
     type: "text",
     placeholder: "Nom",
   },
   {
     id: "prenom",
-    label: "Prenom",
+    label: "Last Name",
     type: "text",
     placeholder: "Prenom",
   },
@@ -24,4 +23,3 @@ export const userInputs = [
     type: "password",
   },
 ];
-

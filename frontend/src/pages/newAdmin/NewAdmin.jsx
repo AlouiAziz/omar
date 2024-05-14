@@ -1,4 +1,4 @@
-import "./newUser.scss";
+
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Inputs } from "../../formSource";
 import useFetch from '../../hooks/useFetch.js';
 
-const NewUser = () => {
+const NewAdmin = () => {
 
   const { data: admins, loading, error } = useFetch("/admins");
   const { data: servers, sloading, serror } = useFetch("/servers");
@@ -120,7 +120,7 @@ const NewUser = () => {
   );
 };
 
-export default NewUser;
+export default NewAdmin;
 
 
 

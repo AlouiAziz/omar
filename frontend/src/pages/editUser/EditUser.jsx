@@ -1,4 +1,4 @@
-import "./newUser.scss";
+import "./editUser.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useFetch from '../../hooks/useFetch.js'
 
 
-const Edit = () => {
+const EditUser = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -118,4 +118,4 @@ const Edit = () => {
   );
 };
 
-export default Edit;
+export default EditUser;

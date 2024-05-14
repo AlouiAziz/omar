@@ -1,7 +1,7 @@
 // User Columns
-export const userColumns = [
+export const Columns = [
 
-  { field: "_id", headerName: "ID", width: 150 },
+  // { field: "_id", headerName: "ID", width: 150 },
   {
     field: "user",
     headerName: "Email",

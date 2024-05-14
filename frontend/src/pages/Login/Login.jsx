@@ -39,16 +39,10 @@ const Login = () => {
 
         try {
             const res = await axios.post("/auth/login", credentials);
-            if (res.data) {
+            if (res.data)  { 
                 dispatch(loginSuccess(res.data));
                 toast.success("Login Successfully");
-                if (res.data.SuperAdmin) {
-                    navigate("/home");
-                } else if (res.data.isAdmin) {
-                    navigate("/home");
-                } else {
-                    navigate("/home");
-                }
+                navigate("/thresholds");
             }
         }
 
