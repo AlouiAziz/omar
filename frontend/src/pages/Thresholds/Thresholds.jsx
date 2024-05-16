@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from "../../components/navbar/Navbar";
 import Sidebar from '../../components/sidebar/Sidebar.jsx';
-import Cercle from '../../components/cercle/Cercle.jsx';
 import { useSelector } from 'react-redux';
 import useFetch from '../../hooks/useFetch.js';
 import axios from 'axios';
+import CircularDiagram from '../../components/circularDiagram/CircularDiagram.jsx';
 
 const Thresholds = () => {
+
+    // Local States
+    const [servers, setServers] = useState([]);
+    const [selectedServer, setSelectedServer] = useState();
+    const [open, setOpen] = useState(false);
+
+    const user = useSelector((state) => state.auth.user);
 
     const color = (n, sn, mn) => {
         if (n >= sn && n < mn) {
@@ -18,15 +25,52 @@ const Thresholds = () => {
         }
     }
 
+    const thresholds = (mn, n) => n >= mn;
 
-    const thresholds = (mn, n) => n >= mn; // Ordre des paramètres corrigé
+    const renderServerColor = (server) => {
+        let serverColor = "vert";
 
-    // Local States
-    const [servers, setServers] = useState([]);
+        if (
+            color(server?.extraction.FilesNumber, server?.config.signalfilesNumber, server?.config.MaxFilesNumber) === "rouge" || color(
+                100 - ((server?.extraction?.freeMemory / server?.extraction?.totalMemory) * 100).toFixed(4),
+                parseFloat(server?.config?.signalMemory?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdMemory?.replace(/[^0-9]/g, ''))
+            ) === "rouge" || color(
+                100 - ((server?.extraction?.freeSpace / server?.extraction?.totalSpace) * 100).toFixed(4),
+                parseFloat(server?.config?.signalSpace?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdSpace?.replace(/[^0-9]/g, ''))
+            ) === "rouge" || color(
+                parseFloat(server?.extraction?.fileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.signalFileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.maxFileSize?.replace(/[^0-9]/g, ''))
+            ) === "rouge"
+        ) {
+            serverColor = "rouge";
+        } else if (
+            color(
+                100 - ((server?.extraction?.freeMemory / server?.extraction?.totalMemory) * 100).toFixed(4),
+                parseFloat(server?.config?.signalMemory?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdMemory?.replace(/[^0-9]/g, ''))
+            ) === "orange" ||
+            color(
+                100 - ((server?.extraction?.freeSpace / server?.extraction?.totalSpace) * 100).toFixed(4),
+                parseFloat(server?.config?.signalSpace?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdSpace?.replace(/[^0-9]/g, ''))
+            ) === "orange" ||
+            color(server?.extraction?.FilesNumber, server?.config?.signalFilesNumber, server?.config?.maxFilesNumber) === "orange" ||
+            color(
+                parseFloat(server?.extraction?.fileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.signalFileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.maxFileSize?.replace(/[^0-9]/g, ''))
+            ) === "orange"
+        ) {
+            serverColor = "orange";
+        }
 
-    const [selectedServer, setSelectedServer] = useState();
-    const [open, setOpen] = useState(false);
-    const user = useSelector((state) => state.auth.user);
+        return serverColor;
+    };
+
+
     // Fonction pour obtenir les privilèges en fonction du type d'utilisateur
     let privilege = [];
     if (user?.type === "user") {
@@ -35,12 +79,12 @@ const Thresholds = () => {
         privilege = user?.admin?.privilege.split(';');
     }
 
+    // Fetcher les extraction à partir de privilège de l'utilisateur
     let url = ''
 
     if (user?.type === "superAdmin") { url = `/extractions` }
     else { url = `/extractions/find?serverNames=${privilege.join(',')}` }
 
-    // Fetcher les extraction à partir de privilège de l'utilisateur
     const { data, loading, error } = useFetch(url);
 
 
@@ -90,8 +134,6 @@ const Thresholds = () => {
     }, [data]);
 
 
-    console.log(servers)
-
     return (
 
         <div>
@@ -110,15 +152,15 @@ const Thresholds = () => {
                                 <div className='card'>
 
                                     <div className="cardTop">
-
-   
-                                        <h4 > <span className=''>.</span>{server?.extraction.serverName}</h4>
-                                        <h5 >@{server?.extraction.ipAddress}</h5>
+                                        <div className="status">
+                                            <h1 className={renderServerColor(server)}>.</h1>
+                                            <h2 className={renderServerColor(server)}>{server?.extraction?.serverName}</h2>
+                                        </div>
+                                        <h4 >@{server?.extraction.ipAddress}</h4>
                                         <p>Date : {new Date(server?.extraction.insertionDate).toLocaleString()}</p>
-
                                     </div>
 
-                                    <p style={{marginTop:20}}className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
+                                    <p style={{ marginTop: 20 }} className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
                                         parseFloat(server?.config.thresholdMomory.replace(/[^0-9]/g, '')))}>Mémoire Libre : {server?.extraction.freeMemory}</p>
 
                                     <p className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
@@ -150,7 +192,7 @@ const Thresholds = () => {
                                     {open && selectedServer.extraction._id === server.extraction._id && (
                                         <div className="modal">
                                             <div className="modal-content">
-                                                <Cercle
+                                                <CircularDiagram
                                                     totalMemory={server?.extraction.totalMemory}
                                                     freeMemory={server?.extraction.freeMemory}
                                                     serverName={server?.extraction.serverName}
@@ -170,6 +212,5 @@ const Thresholds = () => {
         </div>
     );
 }
-    ;
 
 export default Thresholds;

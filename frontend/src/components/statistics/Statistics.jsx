@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import useFetch from '../../hooks/useFetch.js'
 
-const Courbe = () => {
+const Statistics = () => {
 
   const { data, loading, error } = useFetch(`/extractions`)
 
@@ -80,4 +80,4 @@ const Courbe = () => {
   )
 };
 
-export default Courbe;
+export default Statistics;

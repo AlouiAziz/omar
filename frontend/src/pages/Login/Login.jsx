@@ -1,9 +1,9 @@
+import "./Login.css";
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "../../Redux/authSlice.js";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
 import { toast } from "react-toastify";
 
 
@@ -22,7 +22,6 @@ const Login = () => {
     // Global States From Redux authSlice
 
     const loading = useSelector((state) => state.auth.loading);
-    const error = useSelector((state) => state.auth.error);
 
     // Function For updating Input Value
 
@@ -39,16 +38,15 @@ const Login = () => {
 
         try {
             const res = await axios.post("/auth/login", credentials);
-            if (res.data)  { 
+            if (res.data) {
                 dispatch(loginSuccess(res.data));
                 toast.success("Login Successfully");
                 navigate("/thresholds");
             }
         }
-
         catch (err) {
             dispatch(loginFailure())
-            err.response.data.errors.forEach(e => toast.error(e.msg))
+            err?.response?.data?.errors?.forEach(e => toast.error(e.msg))
         }
     };
 

@@ -1,7 +1,7 @@
+import "./home.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import "./home.scss";
-import Courbe from '../../components/courbe/Courbe.jsx'
+import Statistics from '../../components/statistics/Statistics'
 
 
 const Home = () => {
@@ -11,7 +11,7 @@ const Home = () => {
       <div className="home">
         <Sidebar />
         <div className="homeContainer">
-          <Courbe />
+          <Statistics />
         </div>
       </div>
     </div>

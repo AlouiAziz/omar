@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import './Servers.css';
 import Navbar from "../../components/navbar/Navbar";
 import Sidebar from '../../components/sidebar/Sidebar.jsx';
-import Cercle from '../../components/cercle/Cercle.jsx';
+import CircularDiagram from '../../components/circularDiagram/CircularDiagram.jsx';
 import { useSelector } from 'react-redux';
 import useFetch from '../../hooks/useFetch.js';
 import axios from 'axios';
 
 const Servers = () => {
+
 
     // Local States
     const [selectedServer, setSelectedServer] = useState();
@@ -58,8 +59,8 @@ const Servers = () => {
                 // Importer la configuration de chaque serveur
                 const fetchedServers = await Promise.all(
                     filteredServers.map(async (extraction) => {
-                        const serverConfig = await axios.get(`/configurations?serverName=${extraction.serverName}`);
-                        return { extraction, config: serverConfig.data[0] };
+                        const serverConfig = await axios.get(`/configurations?serverName=${extraction?.serverName}`);
+                        return { extraction, config: serverConfig?.data[0] };
                     })
                 );
 
@@ -71,8 +72,6 @@ const Servers = () => {
     }, [data]);
 
 
-    console.log(servers)
-
     const color = (n, sn, mn) => {
         if (n >= sn && n < mn) {
             return "orange";
@@ -81,7 +80,50 @@ const Servers = () => {
         } else {
             return "vert";
         }
-    }
+    };
+
+    const renderServerColor = (server) => {
+        let serverColor = "vert";
+
+        if (
+            color(server?.extraction.FilesNumber, server?.config.signalfilesNumber, server?.config.MaxFilesNumber) === "rouge" || color(
+                100 - ((server?.extraction?.freeMemory / server?.extraction?.totalMemory) * 100).toFixed(4),
+                parseFloat(server?.config?.signalMemory?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdMemory?.replace(/[^0-9]/g, ''))
+            ) === "rouge" || color(
+                100 - ((server?.extraction?.freeSpace / server?.extraction?.totalSpace) * 100).toFixed(4),
+                parseFloat(server?.config?.signalSpace?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdSpace?.replace(/[^0-9]/g, ''))
+            ) === "rouge" || color(
+                parseFloat(server?.extraction?.fileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.signalFileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.maxFileSize?.replace(/[^0-9]/g, ''))
+            ) === "rouge"
+        ) {
+            serverColor = "rouge";
+        } else if (
+            color(
+                100 - ((server?.extraction?.freeMemory / server?.extraction?.totalMemory) * 100).toFixed(4),
+                parseFloat(server?.config?.signalMemory?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdMemory?.replace(/[^0-9]/g, ''))
+            ) === "orange" ||
+            color(
+                100 - ((server?.extraction?.freeSpace / server?.extraction?.totalSpace) * 100).toFixed(4),
+                parseFloat(server?.config?.signalSpace?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.thresholdSpace?.replace(/[^0-9]/g, ''))
+            ) === "orange" ||
+            color(server?.extraction?.FilesNumber, server?.config?.signalFilesNumber, server?.config?.maxFilesNumber) === "orange" ||
+            color(
+                parseFloat(server?.extraction?.fileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.signalFileSize?.replace(/[^0-9]/g, '')),
+                parseFloat(server?.config?.maxFileSize?.replace(/[^0-9]/g, ''))
+            ) === "orange"
+        ) {
+            serverColor = "orange";
+        }
+
+        return serverColor;
+    };
 
 
     return (
@@ -98,16 +140,19 @@ const Servers = () => {
 
                         {servers.map(server => (
 
-                            <div style={{ width: '18rem', marginTop: 50 }} key={server.extraction._id}>
+                            <div style={{ width: '18rem', marginTop: 50, border: "2px solid black", padding: 20 }} key={server.extraction._id}>
                                 <div className='card'>
 
-                                    <h5 className='App'>{server?.extraction.serverName}</h5>
+                                    <div className="cardTop">
+                                        <div className="status">
+                                            <h1 className={renderServerColor(server)}>.</h1>
+                                            <h2 className={renderServerColor(server)}>{server?.extraction?.serverName}</h2>
+                                        </div>
+                                        <h4 >@{server?.extraction.ipAddress}</h4>
+                                        <p>Date : {new Date(server?.extraction.insertionDate).toLocaleString()}</p>
+                                    </div>
 
-                                    <p>Date : {new Date(server?.extraction.insertionDate).toLocaleString()}</p>
-
-
-
-                                    <p className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
+                                    <p style={{ marginTop: 20 }} className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
                                         parseFloat(server?.config.thresholdMomory.replace(/[^0-9]/g, '')))}>Mémoire Libre : {server?.extraction.freeMemory}</p>
 
                                     <p className={color((100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100).toFixed(4)), parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, '')),
@@ -139,7 +184,7 @@ const Servers = () => {
                                     {open && selectedServer.extraction._id === server.extraction._id && (
                                         <div className="modal">
                                             <div className="modal-content">
-                                                <Cercle
+                                                <CircularDiagram
                                                     totalMemory={server?.extraction.totalMemory}
                                                     freeMemory={server?.extraction.freeMemory}
                                                     serverName={server?.extraction.serverName}
@@ -152,9 +197,6 @@ const Servers = () => {
                                 </div>
                             </div>
                         ))}
-
-
-
 
                     </div>
                 </div>

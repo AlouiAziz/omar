@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 
-const Cercle = ({ totalMemory, freeMemory, serverName, freeSpace, totalSpace }) => {
+const CircularDiagram = ({ totalMemory, freeMemory, serverName, freeSpace, totalSpace }) => {
 
     const memoryChartRef = useRef(null);
     const spaceChartRef = useRef(null);
@@ -72,4 +72,4 @@ const Cercle = ({ totalMemory, freeMemory, serverName, freeSpace, totalSpace }) 
 
 };
 
-export default Cercle;
+export default CircularDiagram;

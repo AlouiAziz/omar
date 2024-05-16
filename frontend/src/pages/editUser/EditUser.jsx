@@ -16,6 +16,8 @@ const EditUser = () => {
   const id = location.pathname.split("/")[3];
   const { data, loading, error } = useFetch(`/users/${id}`);
 
+  console.log(data)
+
   const [info, setInfo] = useState({});
 
   useEffect(() => {

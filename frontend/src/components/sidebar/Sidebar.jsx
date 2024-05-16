@@ -2,13 +2,20 @@ import "./sidebar.scss";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import { Link } from "react-router-dom";
+import SettingsApplicationsOutlinedIcon from '@mui/icons-material/SettingsApplicationsOutlined';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import { DangerousOutlined } from "@mui/icons-material";
+import { Link, useNavigate } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
-import { DangerousOutlined } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
+
   const { dispatch } = useContext(DarkModeContext);
+
+  const user = useSelector((state) => state.auth.user)
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -34,27 +41,32 @@ const Sidebar = () => {
           </Link>
           <Link to="/servers" style={{ textDecoration: "none" }}>
             <li>
-              <PersonOutlineIcon className="icon" />
+              <SettingsApplicationsOutlinedIcon className="icon" />
               <span>Servers</span>
             </li>
           </Link>
-          <p className="title">ELEMENTS</p>
-          <Link to="/users" style={{ textDecoration: "none" }}>
+          {user.type === "superAdmin" &&
+            <div>
+              <p className="title">ELEMENTS</p>
+              <Link to="/admins" style={{ textDecoration: "none" }}>
+                <li>
+                  <PersonOutlineIcon className="icon" />
+                  <span>Admins</span>
+                </li>
+              </Link>
+              <Link to="/users" style={{ textDecoration: "none" }}>
+                <li>
+                  <PeopleAltOutlinedIcon className="icon" />
+                  <span>Users</span>
+                </li>
+              </Link>
+            </div>}
+          <Link to="/" style={{ textDecoration: "none" }}>
             <li>
-              <PersonOutlineIcon className="icon" />
-              <span>Users</span>
+              <ExitToAppIcon className="icon" />
+              <span>Logout</span>
             </li>
           </Link>
-          <Link to="/admins" style={{ textDecoration: "none" }}>
-            <li>
-              <PersonOutlineIcon className="icon" />
-              <span>Admins</span>
-            </li>
-          </Link>
-          <li>
-            <ExitToAppIcon className="icon" />
-            <span>Logout</span>
-          </li>
         </ul>
       </div>
       <div className="bottom">

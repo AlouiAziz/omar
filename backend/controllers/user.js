@@ -67,3 +67,14 @@ export const getAllUsers = async (req, res, next) => {
         })
     }
 }
+
+export const getOneUser = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id).populate("admin", "nom prenom");
+        res.status(200).json(user);
+    } catch (err) {
+        return res.status(500).json({
+            payload: "Error"
+        });
+    }
+}

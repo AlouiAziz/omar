@@ -54,6 +54,17 @@ export const deleteAdmin = async (req, res, next) => {
     }
 }
 
+export const getOneAdmin = async (req, res, next) => {
+    try {
+        const admin = await Admin.findById(req.params.id);
+        res.status(200).json(admin);
+    } catch (err) {
+        return res.status(500).json({
+            payload: "Error"
+        });
+    }
+}
+
 export const getAllAdmins = async (req, res, next) => {
     try {
         const admins = await Admin.find().populate({ path: 'users', select: 'nom prenom' });

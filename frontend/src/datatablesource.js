@@ -1,7 +1,4 @@
-// User Columns
 export const Columns = [
-
-  // { field: "_id", headerName: "ID", width: 150 },
   {
     field: "user",
     headerName: "Email",
@@ -17,13 +14,13 @@ export const Columns = [
   },
   {
     field: "nom",
-    headerName: "Nom",
-    width: 100,
+    headerName: "First Name",
+    width: 150,
   },
   {
     field: "prenom",
-    headerName: "Prenom",
-    width: 100,
+    headerName: "Last Name",
+    width: 150,
   },
   {
     field: "privilege",

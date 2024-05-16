@@ -13,6 +13,7 @@ const EditAdmin = () => {
   const navigate = useNavigate();
 
   const id = location.pathname.split("/")[3];
+  console.log(id)
   const { data, loading, error } = useFetch(`/admins/${id}`);
 
   console.log(data)

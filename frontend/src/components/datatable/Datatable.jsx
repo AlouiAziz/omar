@@ -1,18 +1,16 @@
 import "./datatable.scss";
-import { DataGrid } from "@mui/x-data-grid";
-import { Link, useLocation } from "react-router-dom";
-import useFetch from '../../hooks/useFetch.js'
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { DataGrid } from "@mui/x-data-grid";
+import useFetch from '../../hooks/useFetch.js'
 import axios from "axios";
-import {Columns} from '../../datatablesource.js'
+import { Columns } from '../../datatablesource.js'
 
 const Datatable = () => {
 
   const location = useLocation()
 
   const path = location.pathname.split("/")[1]
-
-  console.log(path)
 
   const [list, setList] = useState([])
 
@@ -60,7 +58,7 @@ const Datatable = () => {
     <div className="datatable">
 
       <div className="datatableTitle">
-        Add New
+        Add New {path.slice(0, -1)}
         <Link to={`/${path}/new`} className="link">
           Add New
         </Link>
