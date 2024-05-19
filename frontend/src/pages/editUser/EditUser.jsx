@@ -13,33 +13,39 @@ const EditUser = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  
   const id = location.pathname.split("/")[3];
   const { data, loading, error } = useFetch(`/users/${id}`);
-
-  console.log(data)
-
+  
+  const { data: admins, loading: adminsLoading, error: adminsError } = useFetch("/admins");
+  
   const [info, setInfo] = useState({});
-
+  const [currentAdmin, setCurrentAdmin] = useState("");
+  
   useEffect(() => {
     if (data) {
       setInfo(data);
+      setCurrentAdmin(info?.admin?._id)
     }
   }, [data]);
+  
 
 
-  const handleChange = e => {
-    setInfo(prevInfo => ({ ...prevInfo, [e.target.id]: e.target.value }));
+  const handleAdminChange = (e) => {
+    setCurrentAdmin(e.target.value);
   };
 
-  const handleCheckboxChange = e => {
-    const value = e.target.checked;
-    setInfo(prevInfo => ({ ...prevInfo, [e.target.id]: value }));
+  const handleChange = e => {
+    setInfo(prevInfo => ({ ...prevInfo, [e.target.id]: e.target.value  }));
   };
 
   const handleClick = async e => {
     e.preventDefault();
     try {
-      await axios.put(`/users/${id}`, info);
+
+     const { admin, ...rest } = info
+     const updates = {...rest , admin:currentAdmin}
+      await axios.put(`/users/${id}`, updates);
       toast.success('User Has Been Updated');
       navigate('/users');
     } catch (error) {
@@ -58,7 +64,7 @@ const EditUser = () => {
         <div className="bottom">
           <div className="left">
             <img
-              src="https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+              src={info?.img}
               alt=""
             />
           </div>
@@ -84,32 +90,17 @@ const EditUser = () => {
                 <input value={info.privilege || ''} id="privilege" onChange={handleChange} />
               </div>
 
-              {/* <div className="formInput">
-                <label>Password</label>
-                <input type="password" id="password" onChange={handleChange} />
-              </div> */}
-
-              <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <label>Admin</label>
-                  <input
-                    type="checkbox"
-                    id="isAdmin"
-                    checked={info.isAdmin}
-                    onChange={handleCheckboxChange}
-                  />
-                </div>
-                <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <label>SuperAdmin</label>
-                  <input
-                    type="checkbox"
-                    id="SuperAdmin"
-                    checked={info.SuperAdmin}
-                    onChange={handleCheckboxChange}
-                  />
-                </div>
+              <div className="formInput">
+                <label>Admin</label>
+                <select id="admin" onChange={handleAdminChange} value={currentAdmin}>
+                  {/* <option value={info?.admin?.id} disabled>  {info?.admin?.nom} {info?.admin?.prenom}</option> */}
+                  {admins && admins.map((admin) => (
+                    <option key={admin._id} value={admin._id}>
+                      {admin?.nom} {admin?.prenom}
+                    </option>
+                  ))}
+                </select>
               </div>
-
 
               <button onClick={handleClick}>Send</button>
             </form>

@@ -13,6 +13,9 @@ const Thresholds = () => {
     const [selectedServer, setSelectedServer] = useState();
     const [open, setOpen] = useState(false);
 
+    const [search, setSearch] = useState("fil")
+
+
     const user = useSelector((state) => state.auth.user);
 
     const color = (n, sn, mn) => {
@@ -126,12 +129,16 @@ const Thresholds = () => {
                     thresholds(parseFloat(server?.config.MaxFileSize.replace(/[^0-9]/g, '')), parseFloat(server?.extraction.Filessize.replace(/[^0-9]/g, '')))
                 );
 
-                setServers(updatedServers);
+                const searchedServers = updatedServers.filter(server =>
+                    server?.extraction?.serverName.toLowerCase().includes(search.toLowerCase().trim())
+                );
+
+                setServers(searchedServers);
             }
         };
 
         fetchServers();
-    }, [data]);
+    }, [data,search]);
 
 
     return (
@@ -142,6 +149,8 @@ const Thresholds = () => {
                 <Sidebar />
                 <div className="homeContainer">
                     <h1 style={{ textAlign: 'center' }}>Servers</h1>
+                    <input type="text" onChange={(e) => { setSearch(e.target.value) }} />
+
                     <div className='serversList'>
 
 

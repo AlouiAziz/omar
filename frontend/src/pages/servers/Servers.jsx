@@ -14,6 +14,8 @@ const Servers = () => {
     const [selectedServer, setSelectedServer] = useState();
     const [open, setOpen] = useState(false);
 
+    const [search, setSearch] = useState("fil")
+
     // Importer le user from react redux authSlice
     const user = useSelector((state) => state.auth.user);
 
@@ -64,12 +66,19 @@ const Servers = () => {
                     })
                 );
 
-                setServers(fetchedServers);
+                // Filter the servers based on the search term
+                const searchedServers = fetchedServers.filter(server =>
+                    server?.extraction?.serverName.toLowerCase().includes(search.toLowerCase().trim())
+                );
+
+
+                setServers(searchedServers);
+
             }
         };
 
         fetchServers();
-    }, [data]);
+    }, [data, search]);
 
 
     const color = (n, sn, mn) => {
@@ -126,14 +135,70 @@ const Servers = () => {
     };
 
 
-    return (
+    const sendStatus = (server) => {
+        let status = [];
 
+        const memoryUsage = (100 - ((server?.extraction.freeMemory / server?.extraction.totalMemory) * 100)).toFixed(4);
+        const signalMemory = parseFloat(server?.config.signalMemory.replace(/[^0-9]/g, ''));
+        const thresholdMemory = parseFloat(server?.config.thresholdMomory.replace(/[^0-9]/g, ''));
+
+        const spaceUsage = (100 - ((server?.extraction.freeSpace / server?.extraction.totalSpace) * 100)).toFixed(4);
+        const signalSpace = parseFloat(server?.config.signalSpace.replace(/[^0-9]/g, ''));
+        const thresholdSpace = parseFloat(server?.config.thresholdSpace.replace(/[^0-9]/g, ''));
+
+        const filesNumber = server?.extraction.FilesNumber;
+        const signalFilesNumber = server?.config.signalfilesNumber;
+        const maxFilesNumber = server?.config.MaxFilesNumber;
+
+        const fileSize = parseFloat(server?.extraction.Filessize.replace(/[^0-9]/g, ''));
+        const signalFileSize = parseFloat(server?.config.SignalFilesSize.replace(/[^0-9]/g, ''));
+        const maxFileSize = parseFloat(server?.config.MaxFileSize.replace(/[^0-9]/g, ''));
+
+        if (color(memoryUsage, signalMemory, thresholdMemory) === "rouge") {
+            status.push({ color: "rouge", msg: "Alerte on Memory" });
+        } else if (color(memoryUsage, signalMemory, thresholdMemory) === "orange") {
+            status.push({ color: "orange", msg: "Signal Memory" });
+        } else if (color(memoryUsage, signalMemory, thresholdMemory) === "vert") {
+            status.push({ color: "vert", msg: "Safe Memory" });
+        }
+
+        if (color(spaceUsage, signalSpace, thresholdSpace) === "rouge") {
+            status.push({ color: "rouge", msg: "Alerte on Space" });
+        } else if (color(spaceUsage, signalSpace, thresholdSpace) === "orange") {
+            status.push({ color: "orange", msg: "Signal on Space" });
+        } else if (color(spaceUsage, signalSpace, thresholdSpace) === "vert") {
+            status.push({ color: "vert", msg: "Safe Space" });
+        }
+
+        if (color(filesNumber, signalFilesNumber, maxFilesNumber) === "rouge") {
+            status.push({ color: "rouge", msg: "Alerte on Files Number" });
+        } else if (color(filesNumber, signalFilesNumber, maxFilesNumber) === "orange") {
+            status.push({ color: "orange", msg: "Signal on Files Number" });
+        } else if (color(filesNumber, signalFilesNumber, maxFilesNumber) === "vert") {
+            status.push({ color: "vert", msg: "Safe Files Number" });
+        }
+
+        if (color(fileSize, signalFileSize, maxFileSize) === "rouge") {
+            status.push({ color: "rouge", msg: "Alerte on FilesSize" });
+        } else if (color(fileSize, signalFileSize, maxFileSize) === "orange") {
+            status.push({ color: "orange", msg: "Signal on FilesSize" });
+        } else if (color(fileSize, signalFileSize, maxFileSize) === "vert") {
+            status.push({ color: "vert", msg: "Safe FilesSize" });
+        }
+
+        return status;
+    };
+
+    console.log(search)
+
+    return (
         <div>
             <Navbar />
             <div className="home">
                 <Sidebar />
                 <div className="homeContainer">
                     <h1 style={{ textAlign: 'center' }}>Servers</h1>
+                    <input type="text" onChange={(e) => { setSearch(e.target.value) }} />
                     <div className='serversList'>
 
 
@@ -189,7 +254,8 @@ const Servers = () => {
                                                     freeMemory={server?.extraction.freeMemory}
                                                     serverName={server?.extraction.serverName}
                                                     freeSpace={server?.extraction.freeSpace}
-                                                    totalSpace={server?.extraction.totalSpace} />
+                                                    totalSpace={server?.extraction.totalSpace}
+                                                    status={sendStatus(selectedServer)} />
                                                 <button onClick={() => setOpen(false)}>close</button>
                                             </div>
                                         </div>

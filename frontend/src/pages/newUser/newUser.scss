@@ -59,19 +59,27 @@
               border-bottom: 1px solid gray;
             }
           }
-
-          button {
-            width: 150px;
-            padding: 10px;
-            border: none;
-            background-color: teal;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-          }
         }
       }
     }
   }
+}
+
+
+.choosePrivilege {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+
+.send {
+  width: 150px;
+  padding: 10px;
+  border: none;
+  background-color: teal;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
 }

@@ -21,5 +21,6 @@ export const Inputs = [
     id: "password",
     label: "Password",
     type: "password",
+    placeholder: "Password"
   },
 ];

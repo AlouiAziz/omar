@@ -75,3 +75,6 @@ export const getAllAdmins = async (req, res, next) => {
         });
     }
 };
+
+
+

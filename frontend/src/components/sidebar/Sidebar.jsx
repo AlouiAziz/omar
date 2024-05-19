@@ -27,12 +27,13 @@ const Sidebar = () => {
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-          <Link to="/home" style={{ textDecoration: "none" }}>
-            <li>
-              <DashboardIcon className="icon" />
-              <span>Dashboard</span>
-            </li>
-          </Link>
+          {user.type === "superAdmin" &&
+            <Link to="/home" style={{ textDecoration: "none" }}>
+              <li>
+                <DashboardIcon className="icon" />
+                <span>Dashboard</span>
+              </li>
+            </Link>}
           <Link to="/thresholds" style={{ textDecoration: "none" }}>
             <li>
               <DangerousOutlined className="icon" />

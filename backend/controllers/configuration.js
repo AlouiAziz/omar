@@ -10,3 +10,15 @@ export const getConfiguration = async (req, res, next) => {
         })
     }
 }
+
+
+export const getAllConfigurations = async (req, res, next) => {
+    try {
+        const configurations = await Configuration.find()
+        res.status(200).json(configurations)
+    } catch (err) {
+        return res.status(500).json({
+            payload: "Error"
+        })
+    }
+}

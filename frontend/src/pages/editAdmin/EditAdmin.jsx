@@ -31,11 +31,6 @@ const EditAdmin = () => {
     setInfo(prevInfo => ({ ...prevInfo, [e.target.id]: e.target.value }));
   };
 
-  const handleCheckboxChange = e => {
-    const value = e.target.checked;
-    setInfo(prevInfo => ({ ...prevInfo, [e.target.id]: value }));
-  };
-
   const handleClick = async e => {
     e.preventDefault();
     try {
@@ -53,7 +48,7 @@ const EditAdmin = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Update User</h1>
+          <h1>Update Admin</h1>
         </div>
         <div className="bottom">
           <div className="left">
@@ -88,27 +83,6 @@ const EditAdmin = () => {
                 <label>Password</label>
                 <input type="password" id="password" onChange={handleChange} />
               </div> */}
-
-              <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <label>Admin</label>
-                  <input
-                    type="checkbox"
-                    id="isAdmin"
-                    checked={info.isAdmin}
-                    onChange={handleCheckboxChange}
-                  />
-                </div>
-                <div className="formInput" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <label>SuperAdmin</label>
-                  <input
-                    type="checkbox"
-                    id="SuperAdmin"
-                    checked={info.SuperAdmin}
-                    onChange={handleCheckboxChange}
-                  />
-                </div>
-              </div>
 
 
               <button onClick={handleClick}>Send</button>

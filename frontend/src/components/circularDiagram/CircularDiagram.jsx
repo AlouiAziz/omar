@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 
-const CircularDiagram = ({ totalMemory, freeMemory, serverName, freeSpace, totalSpace }) => {
+const CircularDiagram = ({ totalMemory, freeMemory, serverName, freeSpace, totalSpace, status }) => {
+
+
 
     const memoryChartRef = useRef(null);
     const spaceChartRef = useRef(null);
@@ -60,12 +62,14 @@ const CircularDiagram = ({ totalMemory, freeMemory, serverName, freeSpace, total
             <div className='details'>
                 <div className='chart-container'>
                     <canvas ref={memoryChartRef} width={'100%'} height={'100%'} />
-                    <p>Il existe {freeMemory} libre de {totalMemory} mémoire totale ({percentageFreeMemory}% libre) </p>
                 </div>
                 <div className='chart-container'>
                     <canvas ref={spaceChartRef} width={'100%'} height={'100%'} />
-                    <p>Il existe {freeSpace} libre de {totalSpace} espace total ({percentageFreeSpace}% libre) </p>
                 </div>
+            </div>
+            <div className='etat'>
+                {status.map(statu => (
+                    <p className={statu.color}>{statu.msg}</p>))}
             </div>
         </div>
     );

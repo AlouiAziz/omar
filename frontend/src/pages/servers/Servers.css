@@ -48,24 +48,39 @@
   border-radius: 5px;
   cursor: pointer;
 }
-
 .cercle {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  height: 100%;
+  width: 800px;
 }
 
 .details {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row; /* Changer de row à column */
+  gap: 10px;
   width: 100%;
+  height: 400px;
+}
+
+.etat {
+  height: max-content;
+  width: max-content;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
 }
 
 .chart-container {
   flex: 1;
-  margin-right: 10px;
+  width: 40%; 
 }
+
+
 
 .rouge {
   color: red;
@@ -122,4 +137,12 @@
 .status > h2 {
   position: absolute;
 margin-left: 10px;
+}
+
+
+
+.homeContainer input {
+  margin-left: 40%;
+  width: 20%;
+  height: 30px;
 }
